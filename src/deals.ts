@@ -1,6 +1,14 @@
-import type { Deal } from "./types.js";
+import type { Deal, DealSource } from "./types.js";
 export type { Deal };
 
-export async function searchDeals(_query: string): Promise<Deal[]> {
-  return []; // TODO stage 2+: real sources
+export const sources: DealSource[] = []; // register real sources here
+
+export async function searchDeals(query: string, srcs: DealSource[] = sources): Promise<Deal[]> {
+  const results = await Promise.allSettled(srcs.map((s) => s.search(query)));
+  const seen = new Map<string, Deal>();
+  for (const r of results) {
+    if (r.status !== "fulfilled") continue;
+    for (const d of r.value) if (!seen.has(d.url)) seen.set(d.url, d);
+  }
+  return [...seen.values()].sort((a, b) => a.price - b.price);
 }
