@@ -6,8 +6,9 @@ import { searchDeals } from "./deals.js";
 
 const server = new McpServer({ name: "dealscout-mcp", version: "0.1.0" });
 
-server.tool("search_deals", { query: z.string() }, async ({ query }) => ({
-  content: [{ type: "text", text: JSON.stringify(await searchDeals(query)) }],
+server.tool("search_deals", { query: z.string(), maxPrice: z.number().optional(), limit: z.number().int().positive().optional() }, async ({ query, maxPrice, limit }) => ({
+  content: [{ type: "text", text: JSON.stringify(await searchDeals(query, undefined, { maxPrice, limit })) }],
 }));
 
 await server.connect(new StdioServerTransport());
+
