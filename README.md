@@ -30,7 +30,7 @@ Returns text content: JSON array of `Deal`.
 
     dealscout-mcp search <query> [--max-price N] [--limit N]
 
-Prints JSON array to stdout.
+Prints JSON array to stdout. `--max-price` must be a number >= 0, `--limit` an integer >= 1. Bad input exits 2 with usage; `-h`/`--help`/`help` prints usage.
 
 ## Deal shape
 
